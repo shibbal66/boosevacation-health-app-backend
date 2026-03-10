@@ -34,6 +34,6 @@ export class AuthController {
   @Get("me")
   @UseGuards(AuthGuard)
   me(@User() user: Request["user"]) {
-    return { user };
+    return { data: user };
   }
 }
