@@ -16,7 +16,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "debug": "nest start --debug --watch",
     "dev": "nest start --watch",
-    "build": "pnpm drizzle-kit generate && nest build",
+    "build": "pnpm install && pnpm drizzle-kit generate && nest build",
     "start": "node dist/src/main"
   },
   "dependencies": {
