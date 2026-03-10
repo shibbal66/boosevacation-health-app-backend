@@ -24,10 +24,11 @@
     "baseUrl": "./",
     "paths":
     {
+      "@common/*": [ "./src/common/*" ],
       "@middleware/*": [ "./src/middleware/*" ],
       "@models/*": [ "./src/models/*" ],
       "@modules/*": [ "./src/modules/*" ],
-      "@utils/*": [ "./src/utils/*" ],
+      "@types/*": [ "./src/types/*" ],
       "@src/*": [ "./src/*" ]
     }
   }
