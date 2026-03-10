@@ -24,6 +24,13 @@ export class AuthController {
     return await this.authService.refreshToken(dto.refreshToken, req.ip!);
   }
 
+  @Post("logout")
+  @UseGuards(AuthGuard)
+  async logout(@User("userId") userId: string) {
+    await this.authService.logout(userId);
+    return { message: "Logged out successfully" };
+  }
+
   @Get("me")
   @UseGuards(AuthGuard)
   me(@User() user: Request["user"]) {

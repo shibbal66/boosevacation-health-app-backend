@@ -3,9 +3,11 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { LoggerMiddleware } from "middleware/logger.middleware";
+import { AuthModule } from "modules/auth/auth.module";
 import { DatabaseModule } from "modules/database/database.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
+import { AppController } from "src/app.controller";
 
 @Module({
   imports: [
@@ -18,8 +20,10 @@ import { JWTModule } from "modules/jwt/jwt.module";
     }),
     DatabaseModule,
     JWTModule,
-    HashModule
+    HashModule,
+    AuthModule
   ],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
