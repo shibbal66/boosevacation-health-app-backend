@@ -49,7 +49,7 @@ export default defineConfig(
         {
           groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
           "newlines-between": "never",
-          alphabetize: { order: "asc", caseInsensitive: false }
+          alphabetize: { order: "asc", caseInsensitive: true }
         }
       ],
       "import/no-duplicates": "warn",
