@@ -3,6 +3,7 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
+import importPlugin from "eslint-plugin-import";
 
 export default defineConfig(
   {
@@ -25,6 +26,9 @@ export default defineConfig(
     }
   },
   {
+    plugins: {
+      import: importPlugin
+    },
     rules: {
       "prettier/prettier": "warn",
       "no-console": ["warn", { allow: ["warn", "error", "info"] }],
@@ -40,6 +44,17 @@ export default defineConfig(
       "prefer-const": "warn",
       "no-trailing-spaces": "warn",
       "no-var": "warn",
+      "import/order": [
+        "warn",
+        {
+          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+          "newlines-between": "never",
+          alphabetize: { order: "asc", caseInsensitive: false }
+        }
+      ],
+      "import/no-duplicates": "warn",
+      "import/no-unresolved": "off",
+      "import/newline-after-import": "warn",
       eqeqeq: ["warn", "always"],
       curly: "warn"
     }

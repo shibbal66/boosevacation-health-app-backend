@@ -24,12 +24,12 @@
     "baseUrl": "./",
     "paths":
     {
-      "@common/*": [ "./src/common/*" ],
-      "@middleware/*": [ "./src/middleware/*" ],
-      "@models/*": [ "./src/models/*" ],
-      "@modules/*": [ "./src/modules/*" ],
-      "@types/*": [ "./src/types/*" ],
-      "@src/*": [ "./src/*" ]
+      "common/*": [ "./src/common/*" ],
+      "middleware/*": [ "./src/middleware/*" ],
+      "models/*": [ "./src/models/*" ],
+      "modules/*": [ "./src/modules/*" ],
+      "types/*": [ "./src/types/*" ],
+      "src/*": [ "./src/*" ]
     }
   }
 }

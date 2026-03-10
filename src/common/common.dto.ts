@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { Trim } from "@common/transformer";
+import { Trim } from "common/transformer";
 
 export class ParamDto {
   @IsNotEmpty({ message: "ID is required" })
