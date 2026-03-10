@@ -4,6 +4,6 @@ import { Controller, Get } from "@nestjs/common";
 export class AppController {
   @Get()
   status() {
-    return { status: "OK", time: new Date().toISOString() };
+    return { status: "OK", timestamp: new Date().toISOString() };
   }
 }
