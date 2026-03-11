@@ -7,6 +7,7 @@ import { AuthModule } from "modules/auth/auth.module";
 import { DatabaseModule } from "modules/database/database.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
+import { UserModule } from "modules/user/user.module";
 import { AppController } from "src/app.controller";
 
 @Module({
@@ -21,7 +22,8 @@ import { AppController } from "src/app.controller";
     DatabaseModule,
     JWTModule,
     HashModule,
-    AuthModule
+    AuthModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [
