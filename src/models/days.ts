@@ -23,7 +23,8 @@ const daysTable = pgTable(
     alcohol: boolean().notNull().default(false),
     caffeine: boolean().notNull().default(false),
     food: boolean().notNull().default(false),
-    mood: moodEnum()
+    mood: moodEnum(),
+    completed: boolean().notNull().default(false)
   },
   (table) => [index().on(table.voyageId)]
 );
