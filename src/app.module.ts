@@ -7,6 +7,7 @@ import { AuthModule } from "modules/auth/auth.module";
 import { DatabaseModule } from "modules/database/database.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
+import { NotificationModule } from "modules/notification/notification.module";
 import { UserModule } from "modules/user/user.module";
 import { VoyageModule } from "modules/voyage/voyage.module";
 import { AppController } from "src/app.controller";
@@ -25,7 +26,8 @@ import { AppController } from "src/app.controller";
     HashModule,
     AuthModule,
     UserModule,
-    VoyageModule
+    VoyageModule,
+    NotificationModule
   ],
   controllers: [AppController],
   providers: [
