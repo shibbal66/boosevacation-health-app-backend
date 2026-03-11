@@ -21,6 +21,12 @@ export class VoyageController {
     return { data: voyages };
   }
 
+  @Get("analytics")
+  async getAnalytics(@User("userId") userId: string) {
+    const analytics = await this.voyageService.getAnalytics(userId);
+    return { data: analytics };
+  }
+
   @Get(":voyageId")
   async getVoyageById(@User("userId") userId: string, @Param("voyageId") voyageId: string) {
     const voyage = await this.voyageService.getVoyageById(userId, voyageId);
