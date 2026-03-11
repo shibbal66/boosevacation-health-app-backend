@@ -61,8 +61,7 @@ export class CronService {
             and(
               eq(voyagesTable.userId, user.id),
               eq(daysTable.date, localDateStr),
-              lte(voyagesTable.startDate, localDateStr),
-              gte(voyagesTable.endDate, localDateStr)
+              lte(voyagesTable.startDate, localDateStr)
             )
           )
           .limit(1);

@@ -19,56 +19,6 @@ export type VoyageAnalytics = {
 export class VoyageService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async createVoyage(userId: string): Promise<VoyageWithDays> {
-    const [user] = await this.databaseService.db
-      .select({ timezone: usersTable.timezone })
-      .from(usersTable)
-      .where(eq(usersTable.id, userId))
-      .limit(1);
-
-    const today = this.getCurrentDateInTimezone(user?.timezone ?? "UTC");
-    const startDate = today;
-    const endDate = this.toDateString(new Date(new Date(today).getTime() + 6 * 24 * 60 * 60 * 1000));
-
-    const [activeVoyage] = await this.databaseService.db
-      .select()
-      .from(voyagesTable)
-      .where(
-        and(
-          eq(voyagesTable.userId, userId),
-          lte(voyagesTable.startDate, startDate),
-          gte(voyagesTable.endDate, startDate)
-        )
-      )
-      .limit(1);
-
-    if (activeVoyage) {
-      throw new ConflictException("An active voyage already exists");
-    }
-
-    const [voyage] = await this.databaseService.db
-      .insert(voyagesTable)
-      .values({ userId, startDate, endDate })
-      .returning();
-
-    interface DayValue {
-      voyageId: string;
-      date: string;
-    }
-
-    const dayValues: DayValue[] = [];
-    for (let i = 0; i < 7; i++) {
-      dayValues.push({
-        voyageId: voyage.id,
-        date: this.toDateString(new Date(new Date(today).getTime() + i * 24 * 60 * 60 * 1000))
-      });
-    }
-
-    const days = await this.databaseService.db.insert(daysTable).values(dayValues).returning();
-
-    return { ...voyage, days };
-  }
-
   async getAllVoyages(userId: string, date?: string): Promise<VoyageWithDays[]> {
     const voyages = date
       ? await this.databaseService.db

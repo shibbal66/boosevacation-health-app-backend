@@ -3,6 +3,7 @@ import { eq, getTableColumns } from "drizzle-orm";
 import sessionsTable from "models/sessions";
 import usersTable from "models/users";
 import type { SafeUser } from "models/users";
+import voyagesTable from "models/voyages";
 import type { SignupDto, LoginDto } from "modules/auth/auth.dto";
 import { DatabaseService } from "modules/database/database.service";
 import { HashService } from "modules/hash/hash.service";
@@ -43,6 +44,11 @@ export class AuthService {
     if (!user) {
       throw new ConflictException("Failed to create user");
     }
+
+    await this.databaseService.db.insert(voyagesTable).values({
+      userId: user.id,
+      startDate: new Date().toISOString().split("T")[0]
+    });
 
     return { message: "User created successfully" };
   }

@@ -9,8 +9,7 @@ const voyagesTable = pgTable(
     userId: text()
       .references(() => usersTable.id, { onDelete: "cascade" })
       .notNull(),
-    startDate: date().notNull(),
-    endDate: date().notNull()
+    startDate: date().notNull()
   },
   (table) => [index().on(table.userId)]
 );

@@ -9,12 +9,6 @@ import { VoyageService } from "modules/voyage/voyage.service";
 export class VoyageController {
   constructor(private readonly voyageService: VoyageService) {}
 
-  @Post()
-  async createVoyage(@User("userId") userId: string) {
-    const voyage = await this.voyageService.createVoyage(userId);
-    return { data: voyage };
-  }
-
   @Get()
   async getAllVoyages(@User("userId") userId: string, @Query() query: GetVoyagesQueryDto) {
     const voyages = await this.voyageService.getAllVoyages(userId, query.date);
