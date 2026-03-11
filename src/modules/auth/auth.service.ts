@@ -1,5 +1,6 @@
 import { Injectable, ConflictException, UnauthorizedException } from "@nestjs/common";
 import { eq, getTableColumns } from "drizzle-orm";
+import daysTable from "models/days";
 import sessionsTable from "models/sessions";
 import usersTable from "models/users";
 import type { SafeUser } from "models/users";
@@ -45,10 +46,14 @@ export class AuthService {
       throw new ConflictException("Failed to create user");
     }
 
-    await this.databaseService.db.insert(voyagesTable).values({
-      userId: user.id,
-      startDate: new Date().toISOString().split("T")[0]
-    });
+    const today = new Date().toISOString().split("T")[0];
+
+    const [voyage] = await this.databaseService.db
+      .insert(voyagesTable)
+      .values({ userId: user.id, startDate: today })
+      .returning();
+
+    await this.databaseService.db.insert(daysTable).values({ voyageId: voyage.id, date: today });
 
     return { message: "User created successfully" };
   }
