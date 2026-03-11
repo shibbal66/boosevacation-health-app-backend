@@ -15,15 +15,15 @@ export class VoyageController {
     return { data: voyage };
   }
 
-  // @Get("analytics")
-  // async getAnalytics(@User("userId") userId: string) {
-  //   const analytics = await this.voyageService.getAnalytics(userId);
-  //   return { data: analytics };
-  // }
+  @Get("analytics")
+  async getAnalytics(@User("userId") userId: string) {
+    const analytics = await this.voyageService.getAnalytics(userId);
+    return { data: analytics };
+  }
 
-  // @Patch("log")
-  // async logDay(@User("userId") userId: string, @Body() dto: LogDayDto) {
-  //   const day = await this.voyageService.logDay(userId, dto);
-  //   return { data: day };
-  // }
+  @Patch("log")
+  async logDay(@User("userId") userId: string, @Body() dto: LogDayDto) {
+    const day = await this.voyageService.logDay(userId, dto);
+    return { data: day };
+  }
 }

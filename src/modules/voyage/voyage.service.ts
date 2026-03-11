@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
-import { and, asc, desc, eq, lte, gte } from "drizzle-orm";
+import { and, asc, desc, eq, lte } from "drizzle-orm";
 import daysTable, { Mood, type Day } from "models/days";
 import usersTable from "models/users";
 import voyagesTable, { type Voyage } from "models/voyages";
@@ -43,100 +43,100 @@ export class VoyageService {
     return { ...voyage, days };
   }
 
-  // async logDay(userId: string, dto: LogDayDto): Promise<Day> {
-  //   const [user] = await this.databaseService.db
-  //     .select({ timezone: usersTable.timezone })
-  //     .from(usersTable)
-  //     .where(eq(usersTable.id, userId))
-  //     .limit(1);
+  async logDay(userId: string, dto: LogDayDto): Promise<Day> {
+    const [user] = await this.databaseService.db
+      .select({ timezone: usersTable.timezone })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
 
-  //   const today = this.getCurrentDateInTimezone(user?.timezone ?? "UTC");
+    const today = this.getCurrentDateInTimezone(user?.timezone ?? "UTC");
 
-  //   const [voyage] = await this.databaseService.db
-  //     .select()
-  //     .from(voyagesTable)
-  //     .where(and(eq(voyagesTable.userId, userId), lte(voyagesTable.startDate, today), gte(voyagesTable.endDate, today)))
-  //     .limit(1);
+    const [voyage] = await this.databaseService.db
+      .select()
+      .from(voyagesTable)
+      .where(and(eq(voyagesTable.userId, userId), lte(voyagesTable.startDate, today)))
+      .limit(1);
 
-  //   if (!voyage) {
-  //     throw new NotFoundException("No active voyage found for today");
-  //   }
+    if (!voyage) {
+      throw new NotFoundException("No active voyage found for today");
+    }
 
-  //   const [day] = await this.databaseService.db
-  //     .select()
-  //     .from(daysTable)
-  //     .where(and(eq(daysTable.voyageId, voyage.id), eq(daysTable.date, today)))
-  //     .limit(1);
+    const [day] = await this.databaseService.db
+      .select()
+      .from(daysTable)
+      .where(and(eq(daysTable.voyageId, voyage.id), eq(daysTable.date, today)))
+      .limit(1);
 
-  //   if (!day) {
-  //     throw new NotFoundException("No day entry found for today");
-  //   }
+    if (!day) {
+      throw new NotFoundException("No day entry found for today");
+    }
 
-  //   if (day.completed) {
-  //     throw new BadRequestException("Day is already completed and cannot be updated");
-  //   }
+    if (day.completed) {
+      throw new BadRequestException("Day is already completed and cannot be updated");
+    }
 
-  //   const [updated] = await this.databaseService.db
-  //     .update(daysTable)
-  //     .set({ ...dto, completed: true })
-  //     .where(eq(daysTable.id, day.id))
-  //     .returning();
+    const [updated] = await this.databaseService.db
+      .update(daysTable)
+      .set({ ...dto, completed: true })
+      .where(eq(daysTable.id, day.id))
+      .returning();
 
-  //   return updated;
-  // }
+    return updated;
+  }
 
-  // async getAnalytics(userId: string): Promise<VoyageAnalytics> {
-  //   const [user] = await this.databaseService.db
-  //     .select({ timezone: usersTable.timezone })
-  //     .from(usersTable)
-  //     .where(eq(usersTable.id, userId))
-  //     .limit(1);
+  async getAnalytics(userId: string): Promise<VoyageAnalytics> {
+    const [user] = await this.databaseService.db
+      .select({ timezone: usersTable.timezone })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
 
-  //   const today = this.getCurrentDateInTimezone(user?.timezone ?? "UTC");
+    const today = this.getCurrentDateInTimezone(user?.timezone ?? "UTC");
 
-  //   const [voyage] = await this.databaseService.db
-  //     .select()
-  //     .from(voyagesTable)
-  //     .where(and(eq(voyagesTable.userId, userId), lte(voyagesTable.startDate, today), gte(voyagesTable.endDate, today)))
-  //     .limit(1);
+    const [voyage] = await this.databaseService.db
+      .select()
+      .from(voyagesTable)
+      .where(and(eq(voyagesTable.userId, userId), lte(voyagesTable.startDate, today)))
+      .limit(1);
 
-  //   if (!voyage) {
-  //     throw new NotFoundException("No active voyage found for today");
-  //   }
+    if (!voyage) {
+      throw new NotFoundException("No active voyage found for today");
+    }
 
-  //   const days = await this.databaseService.db
-  //     .select()
-  //     .from(daysTable)
-  //     .where(and(eq(daysTable.voyageId, voyage.id), lte(daysTable.date, today)))
-  //     .orderBy(asc(daysTable.date));
+    const days = await this.databaseService.db
+      .select()
+      .from(daysTable)
+      .where(and(eq(daysTable.voyageId, voyage.id), lte(daysTable.date, today)))
+      .orderBy(asc(daysTable.date));
 
-  //   const moodScore: Record<Mood, number> = {
-  //     [Mood.TERRIBLE]: 1,
-  //     [Mood.BAD]: 2,
-  //     [Mood.OK]: 3,
-  //     [Mood.GOOD]: 4,
-  //     [Mood.GREAT]: 5
-  //   };
+    const moodScore: Record<Mood, number> = {
+      [Mood.TERRIBLE]: 1,
+      [Mood.BAD]: 2,
+      [Mood.OK]: 3,
+      [Mood.GOOD]: 4,
+      [Mood.GREAT]: 5
+    };
 
-  //   let streak = 0;
-  //   for (const day of days) {
-  //     if (day.completed) {
-  //       streak++;
-  //     } else {
-  //       break;
-  //     }
-  //   }
+    let streak = 0;
+    for (const day of days) {
+      if (day.completed) {
+        streak++;
+      } else {
+        break;
+      }
+    }
 
-  //   const checkedIn = days.filter((d) => d.completed).length;
+    const checkedIn = days.filter((d) => d.completed).length;
 
-  //   const alcoholFree = Math.round((days.filter((d) => !d.alcohol && d.completed).length / checkedIn) * 100);
+    const alcoholFree = Math.round((days.filter((d) => !d.alcohol && d.completed).length / checkedIn) * 100);
 
-  //   const completedWithMood = days.filter((d) => d.completed && d.mood);
-  //   const moodSum = completedWithMood.reduce((sum, d) => sum + moodScore[d.mood!], 0);
-  //   const averageMood = checkedIn > 0 ? moodSum / checkedIn : 0;
+    const completedWithMood = days.filter((d) => d.completed && d.mood);
+    const moodSum = completedWithMood.reduce((sum, d) => sum + moodScore[d.mood!], 0);
+    const averageMood = checkedIn > 0 ? moodSum / checkedIn : 0;
 
-  //   return { streak, checkedIn, alcoholFree, averageMood };
-  // }
+    return { streak, checkedIn, alcoholFree, averageMood };
+  }
 
   private getCurrentDateInTimezone(timezone: string): string {
     return new Intl.DateTimeFormat("en-CA", {
