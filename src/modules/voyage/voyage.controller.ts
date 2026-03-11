@@ -1,7 +1,7 @@
-import { Controller, Post, Get, Param, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Get, Patch, Param, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
-import { GetVoyagesQueryDto } from "modules/voyage/voyage.dto";
+import { GetVoyagesQueryDto, LogDayDto } from "modules/voyage/voyage.dto";
 import { VoyageService } from "modules/voyage/voyage.service";
 
 @Controller("voyage")
@@ -25,5 +25,11 @@ export class VoyageController {
   async getVoyageById(@User("userId") userId: string, @Param("voyageId") voyageId: string) {
     const voyage = await this.voyageService.getVoyageById(userId, voyageId);
     return { data: voyage };
+  }
+
+  @Patch("log")
+  async logDay(@User("userId") userId: string, @Body() dto: LogDayDto) {
+    const day = await this.voyageService.logDay(userId, dto);
+    return { data: day };
   }
 }
