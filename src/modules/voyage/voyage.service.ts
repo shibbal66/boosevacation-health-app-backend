@@ -13,9 +13,15 @@ export class VoyageService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async createVoyage(userId: string): Promise<VoyageWithDays> {
-    const today = new Date();
-    const startDate = this.toDateString(today);
-    const endDate = this.toDateString(new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000));
+    const [user] = await this.databaseService.db
+      .select({ timezone: usersTable.timezone })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
+
+    const today = this.getCurrentDateInTimezone(user?.timezone ?? "UTC");
+    const startDate = today;
+    const endDate = this.toDateString(new Date(new Date(today).getTime() + 6 * 24 * 60 * 60 * 1000));
 
     const [activeVoyage] = await this.databaseService.db
       .select()
@@ -47,7 +53,7 @@ export class VoyageService {
     for (let i = 0; i < 7; i++) {
       dayValues.push({
         voyageId: voyage.id,
-        date: this.toDateString(new Date(today.getTime() + i * 24 * 60 * 60 * 1000))
+        date: this.toDateString(new Date(new Date(today).getTime() + i * 24 * 60 * 60 * 1000))
       });
     }
 
