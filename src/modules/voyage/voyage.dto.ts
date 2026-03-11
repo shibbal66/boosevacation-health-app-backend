@@ -7,6 +7,11 @@ export class GetVoyagesQueryDto {
   date?: string;
 }
 
+export class GetDayQueryDto {
+  @IsDateString({}, { message: "Date must be a valid ISO date string (YYYY-MM-DD)" })
+  date: string;
+}
+
 export class LogDayDto {
   @IsOptional()
   @IsBoolean({ message: "Alcohol must be a boolean" })

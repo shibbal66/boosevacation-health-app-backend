@@ -95,6 +95,30 @@ export class VoyageService {
     return { ...voyage, days };
   }
 
+  async getDay(userId: string, date: string): Promise<{ voyage: Voyage; day: Day }> {
+    const [voyage] = await this.databaseService.db
+      .select()
+      .from(voyagesTable)
+      .where(and(eq(voyagesTable.userId, userId), lte(voyagesTable.startDate, date), gte(voyagesTable.endDate, date)))
+      .limit(1);
+
+    if (!voyage) {
+      throw new NotFoundException("No voyage found for the given date");
+    }
+
+    const [day] = await this.databaseService.db
+      .select()
+      .from(daysTable)
+      .where(and(eq(daysTable.voyageId, voyage.id), eq(daysTable.date, date)))
+      .limit(1);
+
+    if (!day) {
+      throw new NotFoundException("No day entry found for the given date");
+    }
+
+    return { voyage, day };
+  }
+
   async logDay(userId: string, dto: LogDayDto): Promise<Day> {
     const [user] = await this.databaseService.db
       .select({ timezone: usersTable.timezone })

@@ -27,6 +27,12 @@ export class VoyageController {
     return { data: voyage };
   }
 
+  @Get("day/:date")
+  async getDay(@User("userId") userId: string, @Param("date") date: string) {
+    const result = await this.voyageService.getDay(userId, date);
+    return { data: result };
+  }
+
   @Patch("log")
   async logDay(@User("userId") userId: string, @Body() dto: LogDayDto) {
     const day = await this.voyageService.logDay(userId, dto);
