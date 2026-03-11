@@ -5,6 +5,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { LoggerMiddleware } from "middleware/logger.middleware";
 import { AuthModule } from "modules/auth/auth.module";
+import { CronModule } from "modules/cron/cron.module";
 import { DatabaseModule } from "modules/database/database.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
@@ -29,7 +30,8 @@ import { AppController } from "src/app.controller";
     AuthModule,
     UserModule,
     VoyageModule,
-    NotificationModule
+    NotificationModule,
+    CronModule
   ],
   controllers: [AppController],
   providers: [
