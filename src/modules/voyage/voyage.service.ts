@@ -54,8 +54,16 @@ export class VoyageService {
     return { ...voyage, days };
   }
 
-  async getAllVoyages(userId: string): Promise<VoyageWithDays[]> {
-    const voyages = await this.databaseService.db.select().from(voyagesTable).where(eq(voyagesTable.userId, userId));
+  async getAllVoyages(userId: string, date?: string): Promise<VoyageWithDays[]> {
+    const voyages = date
+      ? await this.databaseService.db
+          .select()
+          .from(voyagesTable)
+          .where(
+            and(eq(voyagesTable.userId, userId), lte(voyagesTable.startDate, date), gte(voyagesTable.endDate, date))
+          )
+          .limit(1)
+      : await this.databaseService.db.select().from(voyagesTable).where(eq(voyagesTable.userId, userId));
 
     if (voyages.length === 0) {
       return [];

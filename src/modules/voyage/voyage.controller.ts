@@ -1,6 +1,7 @@
-import { Controller, Post, Get, Param, UseGuards } from "@nestjs/common";
+import { Controller, Post, Get, Param, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
+import { GetVoyagesQueryDto } from "modules/voyage/voyage.dto";
 import { VoyageService } from "modules/voyage/voyage.service";
 
 @Controller("voyage")
@@ -15,8 +16,8 @@ export class VoyageController {
   }
 
   @Get()
-  async getAllVoyages(@User("userId") userId: string) {
-    const voyages = await this.voyageService.getAllVoyages(userId);
+  async getAllVoyages(@User("userId") userId: string, @Query() query: GetVoyagesQueryDto) {
+    const voyages = await this.voyageService.getAllVoyages(userId, query.date);
     return { data: voyages };
   }
 

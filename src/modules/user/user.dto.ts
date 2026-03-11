@@ -9,20 +9,20 @@ export class UpdateUserDto {
   name?: string;
 
   @IsOptional()
-  @IsBoolean({ message: "notificationEnabled must be a boolean" })
+  @IsBoolean({ message: "Notification Enabled must be a boolean" })
   notificationEnabled?: boolean;
 
   @IsOptional()
-  @IsString({ message: "notificationTime must be a string" })
-  @Matches(/^\d{2}:\d{2}$/, { message: "notificationTime must be in HH:MM format" })
+  @IsString({ message: "Notification Time must be a string" })
+  @Matches(/^\d{2}:\d{2}$/, { message: "Notification Time must be in HH:MM format" })
   notificationTime?: string;
 
   @IsOptional()
-  @IsTimeZone({ message: "timezone must be a valid IANA timezone" })
+  @IsTimeZone({ message: "Timezone must be a valid IANA timezone" })
   timezone?: string;
 
   @IsOptional()
-  @IsString({ message: "fcmToken must be a string" })
+  @IsString({ message: "FCM Token must be a string" })
   @Trim()
   fcmToken?: string;
 }
