@@ -1,6 +1,7 @@
 import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
+import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { LoggerMiddleware } from "middleware/logger.middleware";
 import { AuthModule } from "modules/auth/auth.module";
@@ -21,6 +22,7 @@ import { AppController } from "src/app.controller";
       isGlobal: true,
       envFilePath: ".env"
     }),
+    ScheduleModule.forRoot({}),
     DatabaseModule,
     JWTModule,
     HashModule,
