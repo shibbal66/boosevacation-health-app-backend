@@ -13,6 +13,7 @@ export type VoyageAnalytics = {
   checkedIn: number;
   alcoholFree: number;
   averageMood: number;
+  totalDays: number;
 };
 
 @Injectable()
@@ -135,7 +136,7 @@ export class VoyageService {
     const moodSum = completedWithMood.reduce((sum, d) => sum + moodScore[d.mood!], 0);
     const averageMood = checkedIn > 0 ? moodSum / checkedIn : 0;
 
-    return { streak, checkedIn, alcoholFree, averageMood };
+    return { streak, checkedIn, alcoholFree, averageMood, totalDays: days.length };
   }
 
   private getCurrentDateInTimezone(timezone: string): string {
