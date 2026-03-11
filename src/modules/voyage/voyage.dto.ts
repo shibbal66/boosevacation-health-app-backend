@@ -1,15 +1,19 @@
-import { IsBoolean, IsDateString, IsEnum, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
+import { IsBoolean, IsEnum, IsInt, IsOptional, Min } from "class-validator";
 import { Mood } from "models/days";
 
-export class GetVoyagesQueryDto {
+export class GetVoyageDto {
   @IsOptional()
-  @IsDateString({}, { message: "Date must be a valid ISO date string (YYYY-MM-DD)" })
-  date?: string;
-}
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
 
-export class GetDayQueryDto {
-  @IsDateString({}, { message: "Date must be a valid ISO date string (YYYY-MM-DD)" })
-  date: string;
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  limit?: number;
 }
 
 export class LogDayDto {
