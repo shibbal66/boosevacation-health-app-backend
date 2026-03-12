@@ -9,7 +9,6 @@ import { LogDayDto } from "modules/voyage/voyage.dto";
 export type VoyageWithDays = Voyage & { days: Day[] };
 
 export type VoyageAnalytics = {
-  streak: number;
   checkedIn: number;
   alcoholFree: number;
   averageMood: number;
@@ -119,15 +118,6 @@ export class VoyageService {
       [Mood.GREAT]: 5
     };
 
-    let streak = 0;
-    for (const day of days) {
-      if (day.completed) {
-        streak++;
-      } else {
-        break;
-      }
-    }
-
     const checkedIn = days.filter((d) => d.completed).length;
 
     const alcoholFree = Math.round((days.filter((d) => !d.alcohol && d.completed).length / checkedIn) * 100);
@@ -136,7 +126,7 @@ export class VoyageService {
     const moodSum = completedWithMood.reduce((sum, d) => sum + moodScore[d.mood!], 0);
     const averageMood = checkedIn > 0 ? moodSum / checkedIn : 0;
 
-    return { streak, checkedIn, alcoholFree, averageMood, totalDays: days.length };
+    return { checkedIn, alcoholFree, averageMood, totalDays: days.length };
   }
 
   private getCurrentDateInTimezone(timezone: string): string {
