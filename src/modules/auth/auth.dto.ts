@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEmail, MinLength, Matches } from "class-validator";
+import { IsNotEmpty, IsString, IsEmail, MinLength, Matches, IsOptional, IsTimeZone } from "class-validator";
 import { Trim, Lowercase } from "common/transformer";
 
 export class SignupDto {
@@ -22,6 +22,10 @@ export class SignupDto {
   })
   @Trim()
   password: string;
+
+  @IsOptional()
+  @IsTimeZone({ message: "Timezone must be a valid IANA timezone" })
+  timezone?: string;
 }
 
 export class LoginDto {

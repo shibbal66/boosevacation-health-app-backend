@@ -38,7 +38,8 @@ export class AuthService {
       .values({
         name: dto.name,
         email: dto.email,
-        password: hashedPassword
+        password: hashedPassword,
+        timezone: dto.timezone
       })
       .returning(safeColumns);
 
@@ -46,7 +47,7 @@ export class AuthService {
       throw new ConflictException("Failed to create user");
     }
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Intl.DateTimeFormat("en-CA", { timeZone: dto.timezone ?? "UTC" }).format(new Date());
 
     const [voyage] = await this.databaseService.db
       .insert(voyagesTable)
