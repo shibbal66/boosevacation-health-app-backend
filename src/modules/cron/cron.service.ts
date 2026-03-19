@@ -132,8 +132,13 @@ export class CronService {
             "Daily Check-in Reminder",
             "Don't forget to log your day before it ends!"
           );
+
+          this.logger.log(`Sent notification to user ${user.id} for date ${localDateStr}`);
+        } else {
+          this.logger.log(`Skipped notification for user ${user.id} on ${localDateStr} — day completed or not found`);
         }
       } catch (err) {
+        console.error(`[sendDailyReminders] Error for user ${user.id}:`, err);
         this.logger.error(`Failed to process notification for user ${user.id}`, err);
       }
     }
