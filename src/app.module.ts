@@ -12,6 +12,7 @@ import { JWTModule } from "modules/jwt/jwt.module";
 // import { NotificationModule } from "modules/notification/notification.module";
 // import { UserModule } from "modules/user/user.module";
 // import { VoyageModule } from "modules/voyage/voyage.module";
+import { MailModule } from "modules/mail/mail.module";
 import { AppController } from "src/app.controller";
 
 @Module({
@@ -27,7 +28,8 @@ import { AppController } from "src/app.controller";
     DatabaseModule,
     JWTModule,
     HashModule,
-    AuthModule
+    AuthModule,
+    MailModule
     // UserModule,
     // VoyageModule,
     // NotificationModule,
