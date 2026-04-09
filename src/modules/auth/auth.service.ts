@@ -1,10 +1,8 @@
 import { Injectable, ConflictException, UnauthorizedException } from "@nestjs/common";
 import { eq, getTableColumns } from "drizzle-orm";
-import daysTable from "models/days";
 import sessionsTable from "models/sessions";
 import usersTable from "models/users";
 import type { SafeUser } from "models/users";
-import voyagesTable from "models/voyages";
 import type { SignupDto, LoginDto } from "modules/auth/auth.dto";
 import { DatabaseService } from "modules/database/database.service";
 import { HashService } from "modules/hash/hash.service";
@@ -46,15 +44,6 @@ export class AuthService {
     if (!user) {
       throw new ConflictException("Failed to create user");
     }
-
-    const today = new Intl.DateTimeFormat("en-CA", { timeZone: dto.timezone ?? "UTC" }).format(new Date());
-
-    const [voyage] = await this.databaseService.db
-      .insert(voyagesTable)
-      .values({ userId: user.id, startDate: today })
-      .returning();
-
-    await this.databaseService.db.insert(daysTable).values({ voyageId: voyage.id, date: today });
 
     return { message: "User created successfully" };
   }

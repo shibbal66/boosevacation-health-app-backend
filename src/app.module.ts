@@ -5,13 +5,13 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { LoggerMiddleware } from "middleware/logger.middleware";
 import { AuthModule } from "modules/auth/auth.module";
-import { CronModule } from "modules/cron/cron.module";
+// import { CronModule } from "modules/cron/cron.module";
 import { DatabaseModule } from "modules/database/database.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
-import { NotificationModule } from "modules/notification/notification.module";
-import { UserModule } from "modules/user/user.module";
-import { VoyageModule } from "modules/voyage/voyage.module";
+// import { NotificationModule } from "modules/notification/notification.module";
+// import { UserModule } from "modules/user/user.module";
+// import { VoyageModule } from "modules/voyage/voyage.module";
 import { AppController } from "src/app.controller";
 
 @Module({
@@ -27,11 +27,11 @@ import { AppController } from "src/app.controller";
     DatabaseModule,
     JWTModule,
     HashModule,
-    AuthModule,
-    UserModule,
-    VoyageModule,
-    NotificationModule,
-    CronModule
+    AuthModule
+    // UserModule,
+    // VoyageModule,
+    // NotificationModule,
+    // CronModule
   ],
   controllers: [AppController],
   providers: [
