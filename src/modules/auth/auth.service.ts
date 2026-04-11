@@ -42,7 +42,7 @@ export class AuthService {
       .where(eq(usersTable.email, dto.email))
       .limit(1);
 
-    if (existingUser) {
+    if (existingUser && existingUser.status === "VERIFIED") {
       throw new ConflictException("Email already exists");
     }
 
@@ -56,11 +56,21 @@ export class AuthService {
         password: hashedPassword,
         timezone: dto.timezone
       })
+      .onConflictDoUpdate({
+        target: usersTable.email,
+        set: {
+          name: dto.name,
+          password: hashedPassword,
+          timezone: dto.timezone
+        }
+      })
       .returning(safeColumns);
 
     if (!user) {
       throw new ConflictException("Failed to create user");
     }
+
+    await this.databaseService.db.delete(verificationsTable).where(eq(verificationsTable.userId, user.id));
 
     const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
