@@ -28,6 +28,7 @@
       "middleware/*": [ "./src/middleware/*" ],
       "models/*": [ "./src/models/*" ],
       "modules/*": [ "./src/modules/*" ],
+      "templates/*": [ "./src/templates/*" ],
       "types/*": [ "./src/types/*" ],
       "src/*": [ "./src/*" ]
     }
