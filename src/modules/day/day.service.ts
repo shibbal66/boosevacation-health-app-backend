@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { differenceInDays } from "date-fns";
 import { desc, eq } from "drizzle-orm";
 import dayLogTable from "models/dayLog";
 import usersTable from "models/users";
@@ -58,5 +59,27 @@ export class DayService {
       .returning();
 
     return { data: result };
+  }
+
+  async getTodaysDay(userId: string) {
+    const [user] = await this.databaseService.db
+      .select({ programPhase: usersTable.programPhase, programStartDate: usersTable.programStartDate })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const today = new Date();
+    let day = differenceInDays(today, user.programStartDate) + 1;
+
+    if (user.programPhase === "TUTORIAL") {
+      day = Math.max(1, Math.min(day, 10));
+      return { data: { tutorialDay: day } };
+    } else {
+      day = Math.max(1, Math.min(day, 90));
+      return { data: { voyageDay: day } };
+    }
   }
 }
