@@ -9,10 +9,10 @@ import { CronModule } from "modules/cron/cron.module";
 import { DatabaseModule } from "modules/database/database.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
-// import { NotificationModule } from "modules/notification/notification.module";
-// import { UserModule } from "modules/user/user.module";
-// import { VoyageModule } from "modules/voyage/voyage.module";
 import { MailModule } from "modules/mail/mail.module";
+import { UserModule } from "modules/user/user.module";
+// import { NotificationModule } from "modules/notification/notification.module";
+// import { VoyageModule } from "modules/voyage/voyage.module";
 import { AppController } from "src/app.controller";
 
 @Module({
@@ -30,8 +30,8 @@ import { AppController } from "src/app.controller";
     HashModule,
     AuthModule,
     MailModule,
-    CronModule
-    // UserModule,
+    CronModule,
+    UserModule
     // VoyageModule,
     // NotificationModule,
   ],
