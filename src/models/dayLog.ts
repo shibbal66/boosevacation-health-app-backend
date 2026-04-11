@@ -1,5 +1,5 @@
 import cuid from "common/cuid";
-import { pgTable, text, date, time, integer, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, date, time, integer, jsonb, index, unique } from "drizzle-orm/pg-core";
 import usersTable from "models/users";
 
 const dayLogTable = pgTable(
@@ -27,7 +27,7 @@ const dayLogTable = pgTable(
       exercise: boolean;
     }>()
   },
-  (table) => [index().on(table.userId), index().on(table.date)]
+  (table) => [index().on(table.userId), index().on(table.date), unique().on(table.userId, table.date)]
 );
 
 export default dayLogTable;
