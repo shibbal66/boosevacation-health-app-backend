@@ -3,13 +3,22 @@ import {
   ConflictException,
   UnauthorizedException,
   BadRequestException,
-  NotFoundException
+  NotFoundException,
+  ForbiddenException
 } from "@nestjs/common";
 import { eq, getTableColumns, and } from "drizzle-orm";
 import sessionsTable from "models/sessions";
 import usersTable, { type SafeUser } from "models/users";
 import verificationsTable from "models/verifications";
-import type { SignupDto, LoginDto, VerifyOtpDto, RefreshTokenDto } from "modules/auth/auth.dto";
+import type {
+  SignupDto,
+  LoginDto,
+  VerifyOtpDto,
+  RefreshTokenDto,
+  ForgotPasswordDto,
+  CheckOtpDto,
+  ResetPasswordDto
+} from "modules/auth/auth.dto";
 import { DatabaseService } from "modules/database/database.service";
 import { HashService } from "modules/hash/hash.service";
 import { JWTService } from "modules/jwt/jwt.service";
@@ -238,5 +247,137 @@ export class AuthService {
   async logout(userId: string) {
     await this.databaseService.db.delete(sessionsTable).where(eq(sessionsTable.userId, userId));
     return { message: "Logged out successfully" };
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const [user] = await this.databaseService.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, dto.email))
+      .limit(1);
+
+    if (user && user.status === "UNVERIFIED") {
+      throw new ForbiddenException("Please verify your email before resetting your password");
+    }
+
+    if (user) {
+      await this.databaseService.db
+        .delete(verificationsTable)
+        .where(and(eq(verificationsTable.userId, user.id), eq(verificationsTable.type, "RESET")));
+
+      const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+      await this.databaseService.db.insert(verificationsTable).values({
+        userId: user.id,
+        type: "RESET",
+        otp,
+        expiresAt
+      });
+
+      await this.mailService.sendResetEmail(user.email, user.name, otp);
+    }
+
+    return {
+      message: "If an account with that email exists, we have sent a password reset email"
+    };
+  }
+
+  async checkOtp(dto: CheckOtpDto) {
+    const [user] = await this.databaseService.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, dto.email))
+      .limit(1);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const [verification] = await this.databaseService.db
+      .select()
+      .from(verificationsTable)
+      .where(
+        and(
+          eq(verificationsTable.userId, user.id),
+          eq(verificationsTable.otp, dto.otp),
+          eq(verificationsTable.type, "RESET")
+        )
+      )
+      .limit(1);
+
+    if (!verification) {
+      throw new BadRequestException("Invalid OTP");
+    }
+
+    if (new Date() > verification.expiresAt) {
+      throw new BadRequestException("OTP has expired");
+    }
+
+    if (verification.used) {
+      throw new BadRequestException("OTP has already been used");
+    }
+
+    return {
+      valid: true,
+      message: "OTP is valid"
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const [user] = await this.databaseService.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, dto.email))
+      .limit(1);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const [verification] = await this.databaseService.db
+      .select()
+      .from(verificationsTable)
+      .where(
+        and(
+          eq(verificationsTable.userId, user.id),
+          eq(verificationsTable.otp, dto.otp),
+          eq(verificationsTable.type, "RESET")
+        )
+      )
+      .limit(1);
+
+    if (!verification) {
+      throw new BadRequestException("Invalid OTP");
+    }
+
+    if (new Date() > verification.expiresAt) {
+      throw new BadRequestException("OTP has expired");
+    }
+
+    if (verification.used) {
+      throw new BadRequestException("OTP has already been used");
+    }
+
+    const isSamePassword = await this.hashService.compare(dto.password, user.password);
+    if (isSamePassword) {
+      throw new BadRequestException("New password cannot be the same as the current password");
+    }
+
+    const hashedPassword = await this.hashService.hash(dto.password);
+
+    await this.databaseService.db
+      .update(verificationsTable)
+      .set({ used: true })
+      .where(eq(verificationsTable.id, verification.id));
+
+    await this.databaseService.db
+      .update(usersTable)
+      .set({ password: hashedPassword })
+      .where(eq(usersTable.id, user.id));
+
+    return {
+      message: "Password has been reset successfully"
+    };
   }
 }

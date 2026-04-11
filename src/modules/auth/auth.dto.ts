@@ -63,3 +63,46 @@ export class RefreshTokenDto {
   @IsString({ message: "Refresh token must be a string" })
   refreshToken: string;
 }
+
+export class ForgotPasswordDto {
+  @IsNotEmpty({ message: "Email is required" })
+  @IsEmail({}, { message: "Email must be a valid email address" })
+  @Trim()
+  @Lowercase()
+  email: string;
+}
+
+export class CheckOtpDto {
+  @IsNotEmpty({ message: "Email is required" })
+  @IsEmail({}, { message: "Email must be a valid email address" })
+  @Trim()
+  @Lowercase()
+  email: string;
+
+  @IsNotEmpty({ message: "OTP is required" })
+  @IsString({ message: "OTP must be a string" })
+  @Trim()
+  otp: string;
+}
+
+export class ResetPasswordDto {
+  @IsNotEmpty({ message: "Email is required" })
+  @IsEmail({}, { message: "Email must be a valid email address" })
+  @Trim()
+  @Lowercase()
+  email: string;
+
+  @IsNotEmpty({ message: "OTP is required" })
+  @IsString({ message: "OTP must be a string" })
+  @Trim()
+  otp: string;
+
+  @IsNotEmpty({ message: "Password is required" })
+  @IsString({ message: "Password must be a string" })
+  @MinLength(8, { message: "Password must be at least 8 characters" })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/, {
+    message: "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character"
+  })
+  @Trim()
+  password: string;
+}

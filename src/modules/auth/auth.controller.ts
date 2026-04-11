@@ -2,7 +2,15 @@ import { Controller, Get, Post, Body, Req, UseGuards } from "@nestjs/common";
 import type { Request } from "express";
 import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
-import { SignupDto, LoginDto, RefreshTokenDto, VerifyOtpDto } from "modules/auth/auth.dto";
+import {
+  SignupDto,
+  LoginDto,
+  RefreshTokenDto,
+  VerifyOtpDto,
+  ForgotPasswordDto,
+  CheckOtpDto,
+  ResetPasswordDto
+} from "modules/auth/auth.dto";
 import { AuthService } from "modules/auth/auth.service";
 
 @Controller("auth")
@@ -39,5 +47,20 @@ export class AuthController {
   @UseGuards(AuthGuard)
   me(@User() user: Request["user"]) {
     return { data: user };
+  }
+
+  @Post("forgot-password")
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return await this.authService.forgotPassword(dto);
+  }
+
+  @Post("check-otp")
+  async checkOtp(@Body() dto: CheckOtpDto) {
+    return await this.authService.checkOtp(dto);
+  }
+
+  @Post("reset-password")
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return await this.authService.resetPassword(dto);
   }
 }
