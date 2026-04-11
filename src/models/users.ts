@@ -1,8 +1,11 @@
 import cuid from "common/cuid";
-import { pgTable, text, pgEnum, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, pgEnum, timestamp } from "drizzle-orm/pg-core";
 
 export const userStatusEnum = pgEnum("user_status", ["VERIFIED", "UNVERIFIED"]);
 export type UserStatus = (typeof userStatusEnum.enumValues)[number];
+
+export const programPhaseEnum = pgEnum("program_phase", ["TUTORIAL", "VOYAGE"]);
+export type ProgramPhase = (typeof programPhaseEnum.enumValues)[number];
 
 const usersTable = pgTable("users", {
   id: cuid().primaryKey(),
@@ -11,7 +14,8 @@ const usersTable = pgTable("users", {
   password: text().notNull(),
   status: userStatusEnum().default("UNVERIFIED").notNull(),
   timezone: text(),
-  inTutorial: boolean().default(true).notNull(),
+  programPhase: programPhaseEnum().default("TUTORIAL").notNull(),
+  programStartDate: timestamp().defaultNow().notNull(),
   fcmToken: text()
 });
 

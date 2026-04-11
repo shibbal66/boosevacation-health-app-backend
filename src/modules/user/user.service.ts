@@ -27,9 +27,14 @@ export class UserService {
   async updateUser(userId: string, dto: UpdateUserDto): Promise<SafeUser> {
     const { password: _, ...safeColumns } = getTableColumns(usersTable);
 
+    const updateData = { ...dto } as Record<string, unknown>;
+    if (dto.programStartDate) {
+      updateData.programStartDate = new Date(dto.programStartDate);
+    }
+
     const [user] = await this.databaseService.db
       .update(usersTable)
-      .set(dto)
+      .set(updateData)
       .where(eq(usersTable.id, userId))
       .returning(safeColumns);
 
