@@ -7,6 +7,7 @@ import { LoggerMiddleware } from "middleware/logger.middleware";
 import { AuthModule } from "modules/auth/auth.module";
 import { CronModule } from "modules/cron/cron.module";
 import { DatabaseModule } from "modules/database/database.module";
+import { DayModule } from "modules/day/day.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
 import { MailModule } from "modules/mail/mail.module";
@@ -31,7 +32,8 @@ import { AppController } from "src/app.controller";
     AuthModule,
     MailModule,
     CronModule,
-    UserModule
+    UserModule,
+    DayModule
     // VoyageModule,
     // NotificationModule,
   ],
