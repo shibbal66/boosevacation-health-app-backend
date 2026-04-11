@@ -1,5 +1,5 @@
 import cuid from "common/cuid";
-import { pgTable, text, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, pgEnum, boolean } from "drizzle-orm/pg-core";
 
 export const userStatusEnum = pgEnum("user_status", ["VERIFIED", "UNVERIFIED"]);
 export type UserStatus = (typeof userStatusEnum.enumValues)[number];
@@ -11,6 +11,7 @@ const usersTable = pgTable("users", {
   password: text().notNull(),
   status: userStatusEnum().default("UNVERIFIED").notNull(),
   timezone: text(),
+  inTutorial: boolean().default(true).notNull(),
   fcmToken: text()
 });
 
