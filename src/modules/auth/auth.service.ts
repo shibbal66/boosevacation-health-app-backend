@@ -1,19 +1,21 @@
 import { Injectable, ConflictException, UnauthorizedException } from "@nestjs/common";
 import { eq, getTableColumns } from "drizzle-orm";
 import sessionsTable from "models/sessions";
-import usersTable from "models/users";
-import type { SafeUser } from "models/users";
+import usersTable, { type SafeUser } from "models/users";
+import verificationsTable from "models/verifications";
 import type { SignupDto, LoginDto } from "modules/auth/auth.dto";
 import { DatabaseService } from "modules/database/database.service";
 import { HashService } from "modules/hash/hash.service";
 import { JWTService } from "modules/jwt/jwt.service";
+import { MailService } from "modules/mail/mail.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JWTService,
-    private readonly hashService: HashService
+    private readonly hashService: HashService,
+    private readonly mailService: MailService
   ) {}
 
   async signup(dto: SignupDto) {
@@ -45,7 +47,19 @@ export class AuthService {
       throw new ConflictException("Failed to create user");
     }
 
-    return { message: "User created successfully" };
+    const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await this.databaseService.db.insert(verificationsTable).values({
+      userId: user.id,
+      type: "VERIFY",
+      otp,
+      expiresAt
+    });
+
+    await this.mailService.sendVerificationEmail(user.email, user.name, otp);
+
+    return { message: "User created successfully. Verification email sent." };
   }
 
   async login(dto: LoginDto, ipAddress: string) {
