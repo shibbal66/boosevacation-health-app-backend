@@ -1,9 +1,15 @@
-import { Injectable, ConflictException, UnauthorizedException } from "@nestjs/common";
-import { eq, getTableColumns } from "drizzle-orm";
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+  BadRequestException,
+  NotFoundException
+} from "@nestjs/common";
+import { eq, getTableColumns, and } from "drizzle-orm";
 import sessionsTable from "models/sessions";
 import usersTable, { type SafeUser } from "models/users";
 import verificationsTable from "models/verifications";
-import type { SignupDto, LoginDto } from "modules/auth/auth.dto";
+import type { SignupDto, LoginDto, VerifyOtpDto, RefreshTokenDto } from "modules/auth/auth.dto";
 import { DatabaseService } from "modules/database/database.service";
 import { HashService } from "modules/hash/hash.service";
 import { JWTService } from "modules/jwt/jwt.service";
@@ -62,6 +68,53 @@ export class AuthService {
     return { message: "User created successfully. Verification email sent." };
   }
 
+  async verifyOtp(dto: VerifyOtpDto) {
+    const [user] = await this.databaseService.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, dto.email))
+      .limit(1);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const [verification] = await this.databaseService.db
+      .select()
+      .from(verificationsTable)
+      .where(and(eq(verificationsTable.userId, user.id), eq(verificationsTable.otp, dto.otp)))
+      .limit(1);
+
+    if (!verification) {
+      throw new BadRequestException("Invalid OTP");
+    }
+
+    if (new Date() > verification.expiresAt) {
+      throw new BadRequestException("OTP has expired");
+    }
+
+    if (verification.used) {
+      throw new BadRequestException("OTP has already been used");
+    }
+
+    await this.databaseService.db
+      .update(verificationsTable)
+      .set({ used: true })
+      .where(eq(verificationsTable.id, verification.id));
+
+    const [updatedUser] = await this.databaseService.db
+      .update(usersTable)
+      .set({ status: "VERIFIED" })
+      .where(eq(usersTable.id, user.id))
+      .returning();
+
+    if (!updatedUser) {
+      throw new ConflictException("Failed to verify user");
+    }
+
+    return { message: "Account verified successfully" };
+  }
+
   async login(dto: LoginDto, ipAddress: string) {
     const [user] = await this.databaseService.db
       .select()
@@ -110,8 +163,8 @@ export class AuthService {
     };
   }
 
-  async refreshToken(token: string, ipAddress: string) {
-    const decoded = this.jwtService.verifyToken(token);
+  async refreshToken(dto: RefreshTokenDto, ipAddress: string) {
+    const decoded = this.jwtService.verifyToken(dto.refreshToken);
     const userId = (decoded.data as { userId?: string })?.userId;
 
     if (!userId) {
@@ -128,7 +181,7 @@ export class AuthService {
       throw new UnauthorizedException("Invalid session");
     }
 
-    const isTokenValid = await this.hashService.compare(token, session.refreshTokenHash);
+    const isTokenValid = await this.hashService.compare(dto.refreshToken, session.refreshTokenHash);
 
     if (!isTokenValid) {
       throw new UnauthorizedException("Invalid session");
@@ -184,5 +237,6 @@ export class AuthService {
 
   async logout(userId: string) {
     await this.databaseService.db.delete(sessionsTable).where(eq(sessionsTable.userId, userId));
+    return { message: "Logged out successfully" };
   }
 }

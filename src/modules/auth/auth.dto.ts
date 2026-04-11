@@ -28,6 +28,19 @@ export class SignupDto {
   timezone?: string;
 }
 
+export class VerifyOtpDto {
+  @IsNotEmpty({ message: "Email is required" })
+  @IsEmail({}, { message: "Email must be a valid email address" })
+  @Trim()
+  @Lowercase()
+  email: string;
+
+  @IsNotEmpty({ message: "OTP is required" })
+  @IsString({ message: "OTP must be a string" })
+  @Trim()
+  otp: string;
+}
+
 export class LoginDto {
   @IsNotEmpty({ message: "Email is required" })
   @IsEmail({}, { message: "Email must be a valid email address" })
