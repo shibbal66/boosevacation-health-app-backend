@@ -14,6 +14,7 @@ import { MailModule } from "modules/mail/mail.module";
 import { UserModule } from "modules/user/user.module";
 // import { NotificationModule } from "modules/notification/notification.module";
 // import { VoyageModule } from "modules/voyage/voyage.module";
+import { VideoModule } from "modules/video/video.module";
 import { AppController } from "src/app.controller";
 
 @Module({
@@ -33,7 +34,8 @@ import { AppController } from "src/app.controller";
     MailModule,
     CronModule,
     UserModule,
-    DayModule
+    DayModule,
+    VideoModule
     // VoyageModule,
     // NotificationModule,
   ],
