@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
 import { WatchVideoDto } from "modules/video/video.dto";
 import { VideoService } from "modules/video/video.service";
 
 @Controller("video")
+@UseGuards(AuthGuard)
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 

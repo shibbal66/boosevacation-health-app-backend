@@ -41,9 +41,9 @@ export class VideoService {
     return { data: grouped };
   }
 
-  async watchVideo(userId: string, videoId: string): Promise<{ data: { message: string } }> {
+  async watchVideo(userId: string, videoId: string): Promise<{ message: string }> {
     await this.databaseService.db.insert(userVideosTable).values({ userId, videoId }).onConflictDoNothing();
 
-    return { data: { message: "Video marked as watched" } };
+    return { message: "Video marked as watched" };
   }
 }
