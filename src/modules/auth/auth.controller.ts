@@ -9,7 +9,8 @@ import {
   VerifyOtpDto,
   ForgotPasswordDto,
   CheckOtpDto,
-  ResetPasswordDto
+  ResetPasswordDto,
+  ResendOtpDto
 } from "modules/auth/auth.dto";
 import { AuthService } from "modules/auth/auth.service";
 
@@ -25,6 +26,11 @@ export class AuthController {
   @Post("verify-otp")
   async verifyOtp(@Body() dto: VerifyOtpDto) {
     return await this.authService.verifyOtp(dto);
+  }
+
+  @Post("resend-otp")
+  async resendOtp(@Body() dto: ResendOtpDto) {
+    return await this.authService.resendVerificationOtp(dto);
   }
 
   @Post("login")

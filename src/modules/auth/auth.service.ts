@@ -17,7 +17,8 @@ import type {
   RefreshTokenDto,
   ForgotPasswordDto,
   CheckOtpDto,
-  ResetPasswordDto
+  ResetPasswordDto,
+  ResendOtpDto
 } from "modules/auth/auth.dto";
 import { DatabaseService } from "modules/database/database.service";
 import { HashService } from "modules/hash/hash.service";
@@ -132,6 +133,40 @@ export class AuthService {
     }
 
     return { message: "Account verified successfully" };
+  }
+
+  async resendVerificationOtp(dto: ResendOtpDto) {
+    const { password: _, ...safeColumns } = getTableColumns(usersTable);
+
+    const [user] = await this.databaseService.db
+      .select(safeColumns)
+      .from(usersTable)
+      .where(eq(usersTable.email, dto.email))
+      .limit(1);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    if (user.status === "VERIFIED") {
+      throw new BadRequestException("User is already verified");
+    }
+
+    await this.databaseService.db.delete(verificationsTable).where(eq(verificationsTable.userId, user.id));
+
+    const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await this.databaseService.db.insert(verificationsTable).values({
+      userId: user.id,
+      type: "VERIFY",
+      otp,
+      expiresAt
+    });
+
+    await this.mailService.sendVerificationEmail(user.email, user.name, otp);
+
+    return { message: "Verification email resent" };
   }
 
   async login(dto: LoginDto, ipAddress: string) {
