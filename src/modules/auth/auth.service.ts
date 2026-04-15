@@ -73,7 +73,7 @@ export class AuthService {
 
     await this.databaseService.db.delete(verificationsTable).where(eq(verificationsTable.userId, user.id));
 
-    const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await this.databaseService.db.insert(verificationsTable).values({
@@ -154,7 +154,7 @@ export class AuthService {
 
     await this.databaseService.db.delete(verificationsTable).where(eq(verificationsTable.userId, user.id));
 
-    const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await this.databaseService.db.insert(verificationsTable).values({
@@ -310,7 +310,7 @@ export class AuthService {
         .delete(verificationsTable)
         .where(and(eq(verificationsTable.userId, user.id), eq(verificationsTable.type, "RESET")));
 
-      const otp = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
       await this.databaseService.db.insert(verificationsTable).values({
