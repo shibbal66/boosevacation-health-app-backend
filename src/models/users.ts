@@ -10,6 +10,7 @@ export type ProgramPhase = (typeof programPhaseEnum.enumValues)[number];
 const usersTable = pgTable("users", {
   id: cuid().primaryKey(),
   name: text().notNull(),
+  nickname: text(),
   email: text().notNull().unique(),
   password: text().notNull(),
   status: userStatusEnum().default("UNVERIFIED").notNull(),

@@ -28,7 +28,8 @@ export class UserService {
     const { password: _, ...safeColumns } = getTableColumns(usersTable);
 
     const updateData = { ...dto } as Record<string, unknown>;
-    if (dto.programStartDate) {
+
+    if (dto.programStartDate !== undefined) {
       updateData.programStartDate = new Date(dto.programStartDate);
     }
 

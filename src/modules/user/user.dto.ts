@@ -10,6 +10,12 @@ export class UpdateUserDto {
   name?: string;
 
   @IsOptional()
+  @IsString({ message: "Nickname must be a string" })
+  @Matches(/^[a-zA-Z\s]+$/, { message: "Nickname can only contain letters and spaces" })
+  @Trim()
+  nickname?: string;
+
+  @IsOptional()
   @IsTimeZone({ message: "Timezone must be a valid IANA timezone" })
   timezone?: string;
 
