@@ -14,6 +14,11 @@ export class DayController {
     return this.dayService.getSleepDurations(userId);
   }
 
+  @Get("resolve")
+  getAverageResolve(@User("userId") userId: string) {
+    return this.dayService.getAverageResolve(userId);
+  }
+
   @Get("today")
   async getTodaysDay(@User("userId") userId: string) {
     return this.dayService.getTodaysDay(userId);

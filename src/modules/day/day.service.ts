@@ -61,7 +61,6 @@ export class DayService {
   }
 
   async getSleepDurations(userId: string) {
-    // Fetch all logs that have either a bedtime or wakeTime for this user
     const logs = await this.databaseService.db
       .select({ date: dayLogTable.date, bedtime: dayLogTable.bedtime, wakeTime: dayLogTable.wakeTime })
       .from(dayLogTable)
@@ -70,7 +69,6 @@ export class DayService {
 
     const totalDays = logs.length;
 
-    // Build a map keyed by date string for quick lookup
     const byDate = new Map<string, { bedtime: string | null; wakeTime: string | null }>();
     for (const log of logs) {
       byDate.set(log.date, { bedtime: log.bedtime, wakeTime: log.wakeTime });
@@ -79,12 +77,10 @@ export class DayService {
     const results: { date: string; hours: string; minutes: number }[] = [];
 
     for (const log of logs) {
-      // We only care about days that have a wakeTime — sleep started the night before
       if (!log.wakeTime) {
         continue;
       }
 
-      // Find the previous day's bedtime
       const prevDate = new Date(log.date);
       prevDate.setDate(prevDate.getDate() - 1);
       const prevDateStr = prevDate.toISOString().split("T")[0];
@@ -94,12 +90,11 @@ export class DayService {
         continue;
       }
 
-      // Parse HH:MM times and compute duration in minutes
       const [bedHour, bedMin] = prevLog.bedtime.split(":").map(Number);
       const [wakeHour, wakeMin] = log.wakeTime.split(":").map(Number);
 
       let sleepMinutes = wakeHour * 60 + wakeMin - (bedHour * 60 + bedMin);
-      // If wake time appears earlier than bedtime it crossed midnight — add 24h
+
       if (sleepMinutes <= 0) {
         sleepMinutes += 24 * 60;
       }
@@ -118,6 +113,34 @@ export class DayService {
     }
 
     return { data: { averageSleep, sleepTimings: results } };
+  }
+
+  async getAverageResolve(userId: string) {
+    const logs = await this.databaseService.db
+      .select({ logs: dayLogTable.logs })
+      .from(dayLogTable)
+      .where(eq(dayLogTable.userId, userId));
+
+    const totalDays = logs.length;
+    if (totalDays === 0) {
+      return { data: { averageResolve: null } };
+    }
+
+    let total = 0;
+    let counted = 0;
+    for (const log of logs) {
+      if (log.logs?.alcoholDesire !== undefined && log.logs.alcoholDesire !== null) {
+        total += log.logs.alcoholDesire;
+        counted++;
+      }
+    }
+
+    if (counted === 0) {
+      return { data: { averageResolve: null } };
+    }
+
+    const averageResolve = Math.round((total / totalDays) * 10) / 10;
+    return { data: { averageResolve } };
   }
 
   async getTodaysDay(userId: string) {
