@@ -19,16 +19,17 @@ const dayLogTable = pgTable(
     wakeTime: time(),
     sleepQuality: integer(),
     logs: jsonb().$type<{
-      noScreen: boolean;
-      warmDrink: boolean;
-      gratitude: boolean;
-      roomTemperatureSet: boolean;
-      meditation: boolean;
-      morningSunlight: boolean;
-      coldShower: boolean;
-      hydrate: boolean;
-      noCaffeine: boolean;
-      exercise: boolean;
+      noScreen?: boolean;
+      warmDrink?: boolean;
+      gratitude?: boolean;
+      roomTemperatureSet?: boolean;
+      meditation?: boolean;
+      morningSunlight?: boolean;
+      coldShower?: boolean;
+      hydrate?: boolean;
+      noCaffeine?: boolean;
+      exercise?: boolean;
+      alcoholDesire?: number;
     }>()
   },
   (table) => [index().on(table.userId), index().on(table.date), unique().on(table.userId, table.date)]

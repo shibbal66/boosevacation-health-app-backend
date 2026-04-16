@@ -3,35 +3,50 @@ import { IsBoolean, IsDateString, IsEnum, IsInt, IsOptional, Matches, Max, Min, 
 import { dayLogTypeEnum, type DayLogType } from "models/dayLog";
 
 class LogsDto {
+  @IsOptional()
   @IsBoolean()
-  noScreen: boolean;
+  noScreen?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  warmDrink: boolean;
+  warmDrink?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  gratitude: boolean;
+  gratitude?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  roomTemperatureSet: boolean;
+  roomTemperatureSet?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  meditation: boolean;
+  meditation?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  morningSunlight: boolean;
+  morningSunlight?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  coldShower: boolean;
+  coldShower?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  hydrate: boolean;
+  hydrate?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  noCaffeine: boolean;
+  noCaffeine?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  exercise: boolean;
+  exercise?: boolean;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  alcoholDesire?: number;
 }
 
 export class CreateDayLogDto {

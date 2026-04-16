@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { differenceInDays } from "date-fns";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, sql } from "drizzle-orm";
 import dayLogTable from "models/dayLog";
 import usersTable from "models/users";
 import { DatabaseService } from "modules/database/database.service";
@@ -43,11 +43,16 @@ export class DayService {
         target: [dayLogTable.userId, dayLogTable.date],
         set: {
           type: data.type,
-          feeling: data.feeling,
-          bedtime: data.bedtime,
-          wakeTime: data.wakeTime,
-          sleepQuality: data.sleepQuality,
-          logs: data.logs
+          ...(data.feeling !== undefined && { feeling: data.feeling }),
+          ...(data.bedtime !== undefined && { bedtime: data.bedtime }),
+          ...(data.wakeTime !== undefined && { wakeTime: data.wakeTime }),
+          ...(data.sleepQuality !== undefined && { sleepQuality: data.sleepQuality }),
+          ...(data.logs !== undefined && {
+            logs:
+              data.logs === null
+                ? null
+                : sql`COALESCE(${dayLogTable.logs}, '{}'::jsonb) || ${JSON.stringify(data.logs)}::jsonb`
+          })
         }
       })
       .returning();
