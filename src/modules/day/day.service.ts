@@ -1,20 +1,26 @@
 import { Injectable } from "@nestjs/common";
 import { differenceInDays } from "date-fns";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import dayLogTable from "models/dayLog";
 import usersTable from "models/users";
 import { DatabaseService } from "modules/database/database.service";
-import { CreateDayLogDto } from "modules/day/day.dto";
+import { CreateDayLogDto, GetDayLogsQueryDto } from "modules/day/day.dto";
 
 @Injectable()
 export class DayService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async getAllDayLogs(userId: string) {
+  async getAllDayLogs(userId: string, query: GetDayLogsQueryDto) {
+    const conditions = [eq(dayLogTable.userId, userId)];
+
+    if (query.type) {
+      conditions.push(eq(dayLogTable.type, query.type));
+    }
+
     const results = await this.databaseService.db
       .select()
       .from(dayLogTable)
-      .where(eq(dayLogTable.userId, userId))
+      .where(and(...conditions))
       .orderBy(desc(dayLogTable.date));
 
     return { data: results };

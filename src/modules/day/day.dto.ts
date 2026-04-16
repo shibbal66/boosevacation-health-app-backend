@@ -66,3 +66,9 @@ export class CreateDayLogDto {
   @Type(() => LogsDto)
   logs?: LogsDto | null;
 }
+
+export class GetDayLogsQueryDto {
+  @IsOptional()
+  @IsEnum(dayLogTypeEnum.enumValues, { message: `Type must be one of: ${dayLogTypeEnum.enumValues.join(", ")}` })
+  type?: DayLogType;
+}

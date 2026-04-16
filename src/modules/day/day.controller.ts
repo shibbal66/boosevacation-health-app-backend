@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
-import { CreateDayLogDto } from "modules/day/day.dto";
+import { CreateDayLogDto, GetDayLogsQueryDto } from "modules/day/day.dto";
 import { DayService } from "modules/day/day.service";
 
 @Controller("day")
@@ -15,8 +15,8 @@ export class DayController {
   }
 
   @Get()
-  async getAllDayLogs(@User("userId") userId: string) {
-    return this.dayService.getAllDayLogs(userId);
+  async getAllDayLogs(@User("userId") userId: string, @Query() query: GetDayLogsQueryDto) {
+    return this.dayService.getAllDayLogs(userId, query);
   }
 
   @Post()
