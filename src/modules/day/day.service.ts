@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { differenceInDays } from "date-fns";
-import { desc, eq, and, sql } from "drizzle-orm";
+import { desc, eq, and, sql, or, isNotNull } from "drizzle-orm";
 import dayLogTable from "models/dayLog";
 import usersTable from "models/users";
 import { DatabaseService } from "modules/database/database.service";
@@ -58,6 +58,58 @@ export class DayService {
       .returning();
 
     return { data: result };
+  }
+
+  async getSleepDurations(userId: string) {
+    // Fetch all logs that have either a bedtime or wakeTime for this user
+    const logs = await this.databaseService.db
+      .select({ date: dayLogTable.date, bedtime: dayLogTable.bedtime, wakeTime: dayLogTable.wakeTime })
+      .from(dayLogTable)
+      .where(and(eq(dayLogTable.userId, userId), or(isNotNull(dayLogTable.bedtime), isNotNull(dayLogTable.wakeTime))))
+      .orderBy(dayLogTable.date);
+
+    // Build a map keyed by date string for quick lookup
+    const byDate = new Map<string, { bedtime: string | null; wakeTime: string | null }>();
+    for (const log of logs) {
+      byDate.set(log.date, { bedtime: log.bedtime, wakeTime: log.wakeTime });
+    }
+
+    const results: { date: string; hours: string }[] = [];
+
+    for (const log of logs) {
+      // We only care about days that have a wakeTime — sleep started the night before
+      if (!log.wakeTime) {
+        continue;
+      }
+
+      // Find the previous day's bedtime
+      const prevDate = new Date(log.date);
+      prevDate.setDate(prevDate.getDate() - 1);
+      const prevDateStr = prevDate.toISOString().split("T")[0];
+      const prevLog = byDate.get(prevDateStr);
+
+      if (!prevLog?.bedtime) {
+        continue;
+      }
+
+      // Parse HH:MM times and compute duration in minutes
+      const [bedHour, bedMin] = prevLog.bedtime.split(":").map(Number);
+      const [wakeHour, wakeMin] = log.wakeTime.split(":").map(Number);
+
+      let sleepMinutes = wakeHour * 60 + wakeMin - (bedHour * 60 + bedMin);
+      // If wake time appears earlier than bedtime it crossed midnight — add 24h
+      if (sleepMinutes <= 0) {
+        sleepMinutes += 24 * 60;
+      }
+
+      const hours = Math.floor(sleepMinutes / 60);
+      const mins = sleepMinutes % 60;
+      const hoursStr = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+
+      results.push({ date: log.date, hours: hoursStr });
+    }
+
+    return { data: results };
   }
 
   async getTodaysDay(userId: string) {

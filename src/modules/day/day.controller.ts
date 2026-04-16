@@ -9,6 +9,11 @@ import { DayService } from "modules/day/day.service";
 export class DayController {
   constructor(private readonly dayService: DayService) {}
 
+  @Get("sleep")
+  getSleepDurations(@User("userId") userId: string) {
+    return this.dayService.getSleepDurations(userId);
+  }
+
   @Get("today")
   async getTodaysDay(@User("userId") userId: string) {
     return this.dayService.getTodaysDay(userId);
