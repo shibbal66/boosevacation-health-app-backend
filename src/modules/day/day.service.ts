@@ -21,25 +21,12 @@ export class DayService {
   }
 
   async addDayLog(userId: string, data: CreateDayLogDto) {
-    const [user] = await this.databaseService.db
-      .select({ timezone: usersTable.timezone })
-      .from(usersTable)
-      .where(eq(usersTable.id, userId));
-
-    const timezone = user?.timezone ?? "UTC";
-
-    const localDate = new Intl.DateTimeFormat("en-CA", {
-      timeZone: timezone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    }).format(new Date());
-
     const [result] = await this.databaseService.db
       .insert(dayLogTable)
       .values({
         userId,
-        date: localDate,
+        date: data.date,
+        type: data.type,
         feeling: data.feeling,
         bedtime: data.bedtime,
         wakeTime: data.wakeTime,
@@ -49,6 +36,7 @@ export class DayService {
       .onConflictDoUpdate({
         target: [dayLogTable.userId, dayLogTable.date],
         set: {
+          type: data.type,
           feeling: data.feeling,
           bedtime: data.bedtime,
           wakeTime: data.wakeTime,
