@@ -143,6 +143,32 @@ export class DayService {
     return { data: { averageResolve } };
   }
 
+  async getStreak(userId: string) {
+    const logs = await this.databaseService.db
+      .select({ date: dayLogTable.date })
+      .from(dayLogTable)
+      .where(eq(dayLogTable.userId, userId))
+      .orderBy(desc(dayLogTable.date));
+
+    const logged = new Set(logs.map((l) => l.date));
+
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+
+    const cursor = new Date(today);
+    if (!logged.has(todayStr)) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    let streak = 0;
+    while (logged.has(cursor.toISOString().split("T")[0])) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return { data: { streak } };
+  }
+
   async getTodaysDay(userId: string) {
     const [user] = await this.databaseService.db
       .select({ programPhase: usersTable.programPhase, programStartDate: usersTable.programStartDate })

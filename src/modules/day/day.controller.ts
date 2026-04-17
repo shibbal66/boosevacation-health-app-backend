@@ -24,6 +24,11 @@ export class DayController {
     return this.dayService.getTodaysDay(userId);
   }
 
+  @Get("streak")
+  async getStreak(@User("userId") userId: string) {
+    return this.dayService.getStreak(userId);
+  }
+
   @Get()
   async getAllDayLogs(@User("userId") userId: string, @Query() query: GetDayLogsQueryDto) {
     return this.dayService.getAllDayLogs(userId, query);
