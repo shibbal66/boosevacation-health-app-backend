@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import userVideosTable from "models/userVideos";
 import videosTable, { type Video, type VideoType } from "models/videos";
 import { DatabaseService } from "modules/database/database.service";
+import { CreateVideoDto } from "modules/video/video.dto";
 
 type VideoWithWatched = Video & { watched: boolean };
 
@@ -46,5 +47,17 @@ export class VideoService {
     await this.databaseService.db.insert(userVideosTable).values({ userId, videoId }).onConflictDoNothing();
 
     return { message: "Video marked as watched" };
+  }
+
+  async createVideo(data: CreateVideoDto): Promise<Video> {
+    const result = await this.databaseService.db.insert(videosTable).values(data).returning();
+
+    return result[0];
+  }
+
+  async deleteVideo(videoId: string): Promise<{ message: string }> {
+    await this.databaseService.db.delete(videosTable).where(eq(videosTable.id, videoId));
+
+    return { message: "Video deleted successfully" };
   }
 }

@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { ParamDto } from "common/common.dto";
 import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
-import { WatchVideoDto } from "modules/video/video.dto";
+import { CreateVideoDto, WatchVideoDto } from "modules/video/video.dto";
 import { VideoSeedService } from "modules/video/video.seed.service";
 import { VideoService } from "modules/video/video.service";
 
@@ -27,5 +28,15 @@ export class VideoController {
   async seedVideos() {
     await this.videoSeedService.seed();
     return { message: "Videos seeded successfully" };
+  }
+
+  @Post()
+  async addVideo(@Body() dto: CreateVideoDto) {
+    return this.videoService.createVideo(dto);
+  }
+
+  @Delete(":id")
+  async deleteVideo(@Param() dto: ParamDto) {
+    return this.videoService.deleteVideo(dto.id);
   }
 }
