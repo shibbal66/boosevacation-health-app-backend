@@ -49,10 +49,10 @@ export class VideoService {
     return { message: "Video marked as watched" };
   }
 
-  async createVideo(data: CreateVideoDto): Promise<Video> {
+  async createVideo(data: CreateVideoDto): Promise<{ data: Video }> {
     const result = await this.databaseService.db.insert(videosTable).values(data).returning();
 
-    return result[0];
+    return { data: result[0] };
   }
 
   async deleteVideo(videoId: string): Promise<{ message: string }> {
