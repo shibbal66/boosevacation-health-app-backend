@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Body, UseGuards } from "@nestjs/common";
+import { Controller, Get, Patch, Delete, Body, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
 import { UpdateUserDto } from "modules/user/user.dto";
@@ -19,5 +19,11 @@ export class UserController {
   async updateUser(@User("userId") userId: string, @Body() dto: UpdateUserDto) {
     const user = await this.userService.updateUser(userId, dto);
     return { data: user };
+  }
+
+  @Delete("me")
+  async deleteUser(@User("userId") userId: string) {
+    await this.userService.deleteUser(userId);
+    return { message: "User deleted successfully" };
   }
 }

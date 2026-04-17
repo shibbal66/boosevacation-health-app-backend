@@ -45,4 +45,12 @@ export class UserService {
 
     return user as SafeUser;
   }
+
+  async deleteUser(userId: string): Promise<void> {
+    const result = await this.databaseService.db.delete(usersTable).where(eq(usersTable.id, userId));
+
+    if (!result) {
+      throw new NotFoundException("User not found");
+    }
+  }
 }
