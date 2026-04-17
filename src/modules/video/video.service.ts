@@ -15,6 +15,7 @@ export class VideoService {
       .select({
         id: videosTable.id,
         title: videosTable.title,
+        thumbnail: videosTable.thumbnail,
         videoURL: videosTable.videoURL,
         description: videosTable.description,
         type: videosTable.type,

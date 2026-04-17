@@ -7,6 +7,7 @@ export type VideoType = (typeof videoTypeEnum.enumValues)[number];
 const videosTable = pgTable("videos", {
   id: cuid().primaryKey(),
   title: text().notNull(),
+  thumbnail: text().notNull(),
   videoURL: text().notNull(),
   description: text().notNull(),
   type: videoTypeEnum().notNull(),
