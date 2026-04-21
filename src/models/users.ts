@@ -1,5 +1,5 @@
 import cuid from "common/cuid";
-import { pgTable, text, pgEnum, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, pgEnum, timestamp, time, boolean } from "drizzle-orm/pg-core";
 
 export const userStatusEnum = pgEnum("user_status", ["VERIFIED", "UNVERIFIED"]);
 export type UserStatus = (typeof userStatusEnum.enumValues)[number];
@@ -14,9 +14,12 @@ const usersTable = pgTable("users", {
   email: text().notNull().unique(),
   password: text().notNull(),
   status: userStatusEnum().default("UNVERIFIED").notNull(),
-  timezone: text(),
   programPhase: programPhaseEnum().default("TUTORIAL").notNull(),
   programStartDate: timestamp().defaultNow().notNull(),
+  notificationEnabled: boolean().default(false).notNull(),
+  morningNotificationTime: time(),
+  eveningNotificationTime: time(),
+  timezone: text(),
   fcmToken: text()
 });
 
