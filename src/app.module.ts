@@ -11,6 +11,7 @@ import { DayModule } from "modules/day/day.module";
 import { HashModule } from "modules/hash/hash.module";
 import { JWTModule } from "modules/jwt/jwt.module";
 import { MailModule } from "modules/mail/mail.module";
+import { MessageModule } from "modules/message/message.module";
 import { UserModule } from "modules/user/user.module";
 // import { NotificationModule } from "modules/notification/notification.module";
 // import { VoyageModule } from "modules/voyage/voyage.module";
@@ -35,7 +36,8 @@ import { AppController } from "src/app.controller";
     CronModule,
     UserModule,
     DayModule,
-    VideoModule
+    VideoModule,
+    MessageModule
     // VoyageModule,
     // NotificationModule,
   ],
