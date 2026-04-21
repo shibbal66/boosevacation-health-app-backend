@@ -171,7 +171,11 @@ export class DayService {
 
   async getTodaysDay(userId: string) {
     const [user] = await this.databaseService.db
-      .select({ programPhase: usersTable.programPhase, programStartDate: usersTable.programStartDate })
+      .select({
+        programPhase: usersTable.programPhase,
+        programStartDate: usersTable.programStartDate,
+        timezone: usersTable.timezone
+      })
       .from(usersTable)
       .where(eq(usersTable.id, userId));
 
@@ -179,8 +183,10 @@ export class DayService {
       throw new Error("User not found");
     }
 
-    const today = new Date();
-    let day = differenceInDays(today, user.programStartDate) + 1;
+    const tz = user.timezone ?? "UTC";
+    const nowInTz = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
+    nowInTz.setHours(0, 0, 0, 0);
+    let day = differenceInDays(nowInTz, user.programStartDate) + 1;
 
     if (user.programPhase === "TUTORIAL") {
       day = Math.max(1, Math.min(day, 10));
