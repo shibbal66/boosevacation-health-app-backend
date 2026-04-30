@@ -19,9 +19,11 @@ export class VideoService {
         thumbnail: videosTable.thumbnail,
         videoURL: videosTable.videoURL,
         description: videosTable.description,
+        messages: videosTable.messages,
         type: videosTable.type,
         week: videosTable.week,
-        time: videosTable.time,
+        day: videosTable.day,
+        duration: videosTable.duration,
         createdAt: videosTable.createdAt,
         watched: userVideosTable.id
       })
