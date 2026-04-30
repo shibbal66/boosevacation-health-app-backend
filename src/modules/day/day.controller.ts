@@ -3,11 +3,15 @@ import { AuthGuard } from "middleware/auth.guard";
 import { User } from "middleware/user.decorator";
 import { CreateDayLogDto, GetDayLogsQueryDto } from "modules/day/day.dto";
 import { DayService } from "modules/day/day.service";
+import { QuoteSeedService } from "modules/day/quote.seed.service";
 
 @Controller("day")
 @UseGuards(AuthGuard)
 export class DayController {
-  constructor(private readonly dayService: DayService) {}
+  constructor(
+    private readonly dayService: DayService,
+    private readonly quoteSeedService: QuoteSeedService
+  ) {}
 
   @Get("sleep")
   getSleepDurations(@User("userId") userId: string) {
@@ -37,5 +41,11 @@ export class DayController {
   @Post()
   async addDayLog(@User("userId") userId: string, @Body() dto: CreateDayLogDto) {
     return this.dayService.addDayLog(userId, dto);
+  }
+
+  @Get("quote/seed")
+  async seedQuotes() {
+    await this.quoteSeedService.seed();
+    return { message: "Quotes seeded successfully" };
   }
 }
