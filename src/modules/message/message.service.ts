@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { and, eq, SQL } from "drizzle-orm";
 import messagesTable, { type Message, type MessageType } from "models/messages";
 import userMessagesTable from "models/userMessages";
@@ -63,6 +63,16 @@ export class MessageService {
   }
 
   async watchMessage(userId: string, messageId: string): Promise<{ message: string }> {
+    const message = await this.databaseService.db
+      .select({ id: messagesTable.id })
+      .from(messagesTable)
+      .where(eq(messagesTable.id, messageId))
+      .limit(1);
+
+    if (message.length === 0) {
+      throw new NotFoundException("Message not found");
+    }
+
     await this.databaseService.db.insert(userMessagesTable).values({ userId, messageId }).onConflictDoNothing();
 
     return { message: "Message marked as watched" };
