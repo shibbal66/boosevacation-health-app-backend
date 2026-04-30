@@ -36,3 +36,9 @@ export class CreateMessageDto {
   @IsString({ each: true, message: "Each message must be a string" })
   messages: string[];
 }
+
+export class WatchMessageDto {
+  @IsString({ message: "Message ID must be a string" })
+  @Trim()
+  messageId: string;
+}
