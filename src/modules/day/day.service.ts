@@ -190,10 +190,22 @@ export class DayService {
 
     if (user.programPhase === "TUTORIAL") {
       day = Math.max(1, Math.min(day, 10));
+
       return { data: { tutorialDay: day } };
     } else {
       day = Math.max(1, Math.min(day, 90));
-      return { data: { voyageDay: day } };
+      const milestone = Math.ceil(day / 15);
+      const dayInMilestone = ((day - 1) % 15) + 1;
+
+      return {
+        data: {
+          voyageDay: day,
+          milestone,
+          milestoneTotal: 6,
+          dayInMilestone,
+          daysPerMilestone: 15
+        }
+      };
     }
   }
 }
