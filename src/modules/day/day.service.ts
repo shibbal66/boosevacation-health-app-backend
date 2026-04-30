@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { differenceInDays } from "date-fns";
 import { desc, eq, and, sql, or, isNotNull } from "drizzle-orm";
 import dayLogTable from "models/dayLog";
+import quotesTable from "models/quotes";
 import usersTable from "models/users";
 import { DatabaseService } from "modules/database/database.service";
 import { CreateDayLogDto, GetDayLogsQueryDto } from "modules/day/day.dto";
@@ -197,13 +198,19 @@ export class DayService {
       const milestone = Math.ceil(day / 15);
       const dayInMilestone = ((day - 1) % 15) + 1;
 
+      const [quoteRow] = await this.databaseService.db
+        .select({ quote: quotesTable.quote })
+        .from(quotesTable)
+        .where(eq(quotesTable.day, day));
+
       return {
         data: {
           voyageDay: day,
           milestone,
           milestoneTotal: 6,
           dayInMilestone,
-          daysPerMilestone: 15
+          daysPerMilestone: 15,
+          quote: quoteRow?.quote ?? null
         }
       };
     }
