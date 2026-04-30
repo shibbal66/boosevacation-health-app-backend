@@ -1,7 +1,7 @@
 import cuid from "common/cuid";
 import { pgTable, text, pgEnum, timestamp, integer } from "drizzle-orm/pg-core";
 
-export const videoTypeEnum = pgEnum("video_type", ["ORIENTATION", "BLOG"]);
+export const videoTypeEnum = pgEnum("video_type", ["ORIENTATION", "HOME", "ALCOHOL", "SLEEP"]);
 export type VideoType = (typeof videoTypeEnum.enumValues)[number];
 
 const videosTable = pgTable("videos", {
@@ -10,9 +10,11 @@ const videosTable = pgTable("videos", {
   thumbnail: text().notNull(),
   videoURL: text().notNull(),
   description: text().notNull(),
+  messages: text().array().notNull().default([]),
   type: videoTypeEnum().notNull(),
   week: integer(),
-  time: integer().notNull(),
+  day: integer(),
+  duration: integer().notNull(),
   createdAt: timestamp().defaultNow().notNull()
 });
 
