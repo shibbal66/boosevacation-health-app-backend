@@ -29,6 +29,8 @@ const dayLogTable = pgTable(
       hydrate?: boolean;
       noCaffeine?: boolean;
       exercise?: boolean;
+      stretching?: boolean;
+      waterBeforeCoffee?: boolean;
       alcoholDesire?: number;
     }>()
   },

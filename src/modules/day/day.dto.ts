@@ -44,6 +44,14 @@ class LogsDto {
   exercise?: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  stretching?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  waterBeforeCoffee?: boolean;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   alcoholDesire?: number;
