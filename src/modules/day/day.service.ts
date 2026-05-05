@@ -190,7 +190,7 @@ export class DayService {
     let day = differenceInDays(nowInTz, user.programStartDate) + 1;
 
     if (user.programPhase === "TUTORIAL") {
-      day = Math.max(1, Math.min(day, 10));
+      day = Math.max(1, Math.min(day, 14));
 
       return { data: { tutorialDay: day } };
     } else {

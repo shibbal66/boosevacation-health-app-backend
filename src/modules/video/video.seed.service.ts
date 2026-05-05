@@ -28,9 +28,9 @@ export class VideoSeedService {
           ],
           resources: ["Alcohol Lied to Me — Craig Beck", "Huberman Lab podcast episode on alcohol"]
         },
-        type: "ORIENTATION",
+        type: "HOME",
         week: 1,
-        day: 0,
+        day: 1,
         duration: 6
       },
       {
@@ -52,9 +52,9 @@ export class VideoSeedService {
             "Start getting on track with daily structure"
           ]
         },
-        type: "ORIENTATION",
-        week: 2,
-        day: 0,
+        type: "HOME",
+        week: 3,
+        day: 2,
         duration: 3
       },
       {
@@ -76,9 +76,9 @@ export class VideoSeedService {
             "Prepare and practice social scripts for drinking situations"
           ]
         },
-        type: "ORIENTATION",
-        week: 3,
-        day: 0,
+        type: "HOME",
+        week: 5,
+        day: 3,
         duration: 2
       },
       {
@@ -98,9 +98,9 @@ export class VideoSeedService {
             "Aggressive habit reinforcement"
           ]
         },
-        type: "ORIENTATION",
-        week: 4,
-        day: 0,
+        type: "HOME",
+        week: 7,
+        day: 4,
         duration: 2
       },
       {
@@ -120,9 +120,9 @@ export class VideoSeedService {
             "Mindset work: this is who you are now"
           ]
         },
-        type: "ORIENTATION",
-        week: 5,
-        day: 0,
+        type: "HOME",
+        week: 9,
+        day: 5,
         duration: 12
       },
       {
@@ -140,9 +140,9 @@ export class VideoSeedService {
             "⚓ Return to Port — Ready to think about reintroducing alcohol. We guide you through how to think about it intentionally, strategically, and on your terms."
           ]
         },
-        type: "ORIENTATION",
-        week: 6,
-        day: 0,
+        type: "SLEEP",
+        week: 11,
+        day: 6,
         duration: 5
       }
     ];
