@@ -52,7 +52,11 @@ export class VideoService {
   }
 
   async createVideo(data: CreateVideoDto): Promise<{ data: Video }> {
-    const result = await this.databaseService.db.insert(videosTable).values(data).returning();
+    const payload = {
+      ...data,
+      messages: data.messages || {}
+    };
+    const result = await this.databaseService.db.insert(videosTable).values(payload).returning();
 
     return { data: result[0] };
   }
