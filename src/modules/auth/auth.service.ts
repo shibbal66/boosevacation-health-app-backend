@@ -180,6 +180,10 @@ export class AuthService {
       throw new UnauthorizedException("Invalid credentials");
     }
 
+    if (user.status === "UNVERIFIED") {
+      throw new ForbiddenException("Please verify your email to login");
+    }
+
     const isPasswordValid = await this.hashService.compare(dto.password, user.password);
 
     if (!isPasswordValid) {
